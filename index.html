@@ -1423,6 +1423,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
 // ════════════════════════════════════════
 let nextId = 1;
 const cards = {}; // id → card object
+const landArtCache = {}; // basic land name → custom art data URL (persisted to account)
 
 const gs = {
     me:  { life: 40, cmdDmg: 0, cmdTax: 0, poison: 0, energy: 0, experience: 0, hand: [], battlefield: [], library: [], graveyard: [], exile: [], command: [] },
@@ -1496,7 +1497,7 @@ function buildCardEl(card, opts = {}) {
         return div;
     }
 
-    const img = card.customImage || card.image;
+    const img = card.customImage || landArtCache[card.name] || card.image;
     const countersHtml = Object.entries(card.counters)
         .filter(([,v]) => v > 0)
         .map(([k,v]) => `<span class="counter-pip">${k}${v > 1 ? ' '+v : ''}</span>`)
@@ -1910,7 +1911,16 @@ function showCtx(id, e) {
     add('👁 Show to All Players',    () => revealCardToAll(id));
     sep();
     add('🖼️ Change Art',             () => setCustomArt(id));
-    if (card.customImage) add('↩ Reset Art', () => { card.customImage = null; renderAll(); });
+    if (card.customImage || landArtCache[card.name]) add('↩ Reset Art', () => {
+        if (isBasicLand(card)) {
+            delete landArtCache[card.name];
+            Object.values(cards).forEach(c => { if (c.name === card.name) c.customImage = null; });
+            scheduleCosmetics();
+        } else {
+            card.customImage = null;
+        }
+        renderAll();
+    });
 
     const mx = Math.min(e.clientX, window.innerWidth  - 200);
     const my = Math.min(e.clientY, window.innerHeight - 340);
@@ -2358,13 +2368,19 @@ function compressImage(dataUrl, maxW, maxH, quality, callback) {
     img.src = dataUrl;
 }
 
+function isBasicLand(card) {
+    return card.isLand && (card.type?.toLowerCase().includes('basic') || ['Plains','Island','Swamp','Mountain','Forest','Wastes','Snow-Covered Plains','Snow-Covered Island','Snow-Covered Swamp','Snow-Covered Mountain','Snow-Covered Forest'].includes(card.name));
+}
+
 function setCustomArt(id) {
-    const picker = document.getElementById('art-picker');
-    // Remove old listener to avoid stacking
-    const fresh = picker.cloneNode();
-    picker.parentNode.replaceChild(fresh, fresh.id ? picker : picker);
-    document.getElementById('art-picker').remove();
-    fresh.id = 'art-picker';
+    const card  = cards[id];
+    const basic = isBasicLand(card);
+
+    // Clone the file input to avoid stacking listeners
+    const old = document.getElementById('art-picker');
+    old.remove();
+    const fresh = document.createElement('input');
+    fresh.type = 'file'; fresh.id = 'art-picker'; fresh.accept = 'image/*'; fresh.style.display = 'none';
     document.body.appendChild(fresh);
 
     fresh.onchange = () => {
@@ -2372,8 +2388,20 @@ function setCustomArt(id) {
         if (!file) return;
         const reader = new FileReader();
         reader.onload = e => {
-            cards[id].customImage = e.target.result;
-            renderAll();
+            compressImage(e.target.result, 480, 340, 0.85, data => {
+                if (basic) {
+                    // Apply to all owned copies of this land
+                    landArtCache[card.name] = data;
+                    Object.values(cards).forEach(c => {
+                        if (c.name === card.name && c.owner === card.owner) c.customImage = data;
+                    });
+                    scheduleCosmetics();
+                    addLog(`Art updated for all ${card.name} copies.`, 'system');
+                } else {
+                    cards[id].customImage = data;
+                }
+                renderAll();
+            });
         };
         reader.readAsDataURL(file);
     };
@@ -2483,7 +2511,7 @@ let previewHideTimer = null;
 
 function showPreview(card, e) {
     clearTimeout(previewHideTimer);
-    const img = card.customImage || card.image;
+    const img = card.customImage || landArtCache[card.name] || card.image;
 
     if (img) {
         preview.innerHTML = `<img src="${img}" alt="${card.name}" draggable="false">`;
@@ -3217,6 +3245,9 @@ create table cosmetics (
 alter table cosmetics enable row level security;
 create policy "Public read" on cosmetics for select using (true);
 create policy "Own write" on cosmetics for all using (auth.uid() = user_id);
+
+-- Run this if you already created the table without land_arts:
+alter table cosmetics add column if not exists land_arts jsonb default '{}';
 */
 
 // ════════════════════════════════════════
@@ -3368,6 +3399,9 @@ async function loadCosmetics() {
         document.getElementById('pm-y-val').textContent = playmatY + '%';
     }
     if (data.playmat_mode) playmatMode = data.playmat_mode;
+    if (data.land_arts && typeof data.land_arts === 'object') {
+        Object.assign(landArtCache, data.land_arts);
+    }
     if (data.playmat_data) {
         document.getElementById('pm-image-controls').style.display = 'flex';
         document.getElementById('playmat-clear-btn').style.display = '';
@@ -3395,6 +3429,7 @@ async function saveCosmetics() {
         playmat_x:        playmatX,
         playmat_y:        playmatY,
         playmat_mode:     playmatMode,
+        land_arts:        Object.keys(landArtCache).length ? landArtCache : null,
         updated_at:       new Date().toISOString()
     }, { onConflict: 'user_id' });
 }
