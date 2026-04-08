@@ -9,20 +9,22 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-    --felt: #1e3b2a;
-    --felt-light: #254d36;
-    --bg: #0d1a12;
-    --border: rgba(255,255,255,0.08);
-    --gold: #c8a84b;
-    --text: #e2e8e4;
-    --text-sec: #7a9a80;
+    --felt: #060d1e;
+    --felt-light: #0d1f3c;
+    --bg: #020609;
+    --border: rgba(100,160,255,0.12);
+    --gold: #7dd3fc;
+    --text: #e8f0fe;
+    --text-sec: #5a88c0;
     --card-w: 100px;
     --card-h: 140px;
     --radius: 8px;
-    --shadow: 0 4px 16px rgba(0,0,0,0.6);
+    --shadow: 0 4px 16px rgba(0,0,0,0.8);
 }
 
 html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); user-select: none; }
+#starfield { position:fixed;inset:0;z-index:0;pointer-events:none; }
+#table { position:relative;z-index:1; }
 
 /* ── TABLE GRID ── */
 #table {
@@ -166,7 +168,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
 /* Sleeve panel */
 #sleeve-panel {
     position: fixed; left: 0; top: 0; width: 300px; height: 100vh;
-    background: #0e1a14; border-right: 1px solid rgba(255,255,255,0.08);
+    background: #040c1a; border-right: 1px solid rgba(255,255,255,0.08);
     z-index: 8998; display: flex; flex-direction: column;
     transform: translateX(-100%); transition: transform 0.22s ease;
     box-shadow: 6px 0 24px rgba(0,0,0,0.6);
@@ -209,7 +211,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
 
 /* ── FLOATING PANEL (shared base) ── */
 .float-panel {
-    position: fixed; bottom: 58px; left: 12px; background: #0e1a14;
+    position: fixed; bottom: 58px; left: 12px; background: #040c1a;
     border: 1px solid rgba(255,255,255,0.1); border-radius: 14px;
     box-shadow: 0 16px 48px rgba(0,0,0,0.7); z-index: 7999;
     display: none; flex-direction: column;
@@ -298,7 +300,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
 /* ── LOBBY MODAL ── */
 #lobby-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:99999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px); }
 #lobby-overlay.hidden { display:none; }
-.lobby-box { background:#0e1a14;border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:32px 28px;width:380px;max-width:94vw;box-shadow:0 24px 80px rgba(0,0,0,0.8);display:flex;flex-direction:column;gap:14px; }
+.lobby-box { background:#040c1a;border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:32px 28px;width:380px;max-width:94vw;box-shadow:0 24px 80px rgba(0,0,0,0.8);display:flex;flex-direction:column;gap:14px; }
 .lobby-title { font-size:1.5rem;font-weight:900;color:var(--gold);text-align:center;letter-spacing:0.02em; }
 .lobby-subtitle { font-size:0.78rem;color:var(--text-sec);text-align:center;line-height:1.5; }
 .lobby-input { padding:10px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:9px;color:var(--text);font-size:0.9rem;outline:none;width:100%; }
@@ -364,13 +366,13 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
 /* ── PLAYMAT PANEL ── */
 #playmat-panel {
     position: fixed; left: 0; top: 0; width: 300px; height: 100vh;
-    background: #0e1a14; border-right: 1px solid rgba(255,255,255,0.08);
+    background: #040c1a; border-right: 1px solid rgba(255,255,255,0.08);
     z-index: 8997; display: flex; flex-direction: column;
     transform: translateX(-100%); transition: transform 0.22s ease;
     box-shadow: 6px 0 24px rgba(0,0,0,0.6);
 }
 #playmat-panel.open { transform: translateX(0); }
-.playmat-preview-wrap { width: 100%; border-radius: 8px; overflow: hidden; border: 2px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 2px; background: #0a120e; padding: 3px; }
+.playmat-preview-wrap { width: 100%; border-radius: 8px; overflow: hidden; border: 2px solid rgba(100,160,255,0.15); display: flex; flex-direction: column; gap: 2px; background: #040c1a; padding: 3px; }
 .playmat-preview-zone { border-radius: 5px; height: 60px; background: var(--felt); background-image: radial-gradient(ellipse at 50% 50%, var(--felt-light) 0%, var(--felt) 75%); position: relative; overflow: hidden; }
 .playmat-preview-zone-label { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: rgba(255,255,255,0.25); text-transform: uppercase; letter-spacing: 0.1em; pointer-events: none; }
 .pm-ctrl-row { display: flex; align-items: center; gap: 8px; }
@@ -476,7 +478,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
 #search-panel {
     position: fixed; left: 0; top: 0;
     width: 300px; height: 100vh;
-    background: #0e1a14;
+    background: #040c1a;
     border-right: 1px solid rgba(255,255,255,0.08);
     z-index: 9000; display: flex; flex-direction: column;
     transform: translateX(-100%);
@@ -677,6 +679,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
 </head>
 <body>
 
+<canvas id="starfield"></canvas>
 <div id="table">
     <!-- ── OPPONENT ── -->
     <div class="player-area" id="opp-area">
@@ -953,10 +956,9 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
         <button class="sp-close" onclick="togglePlaymatPanel()">×</button>
     </div>
     <div class="sleeve-body">
-        <!-- Live preview showing both zones -->
+        <!-- Live preview -->
         <div class="playmat-preview-wrap" id="playmat-preview">
-            <div class="playmat-preview-zone" id="pm-prev-opp"><span class="playmat-preview-zone-label">Opponent</span></div>
-            <div class="playmat-preview-zone" id="pm-prev-me"><span class="playmat-preview-zone-label">You</span></div>
+            <div class="playmat-preview-zone" id="pm-prev-me" style="height:90px"><span class="playmat-preview-zone-label">Your Battlefield</span></div>
         </div>
 
         <p class="pm-hint">Best size: 1920×1080 · JPG recommended</p>
@@ -2035,16 +2037,16 @@ function updateSleeveUI() {
 //  PLAYMAT
 // ════════════════════════════════════════
 const PLAYMAT_COLORS = [
-    { label: 'Forest',  felt: '#1e3b2a', light: '#254d36' },
-    { label: 'Ocean',   felt: '#1a2e4a', light: '#1f3a5e' },
-    { label: 'Obsidian',felt: '#1a1a2e', light: '#222240' },
-    { label: 'Crimson', felt: '#3b1e1e', light: '#4d2525' },
-    { label: 'Dusk',    felt: '#2e1e3b', light: '#3a254d' },
-    { label: 'Sand',    felt: '#3b3020', light: '#4d3e28' },
-    { label: 'Slate',   felt: '#1e2a30', light: '#253640' },
-    { label: 'Midnight',felt: '#0d0d0d', light: '#1a1a1a' },
-    { label: 'Ivory',   felt: '#2e2e28', light: '#3a3a32' },
-    { label: 'Copper',  felt: '#3b2a1e', light: '#4d3828' },
+    { label: 'Deep Space', felt: '#060d1e', light: '#0d1f3c' },
+    { label: 'Nebula',     felt: '#0d0a1e', light: '#1a1040' },
+    { label: 'Void',       felt: '#050505', light: '#111118' },
+    { label: 'Nova',       felt: '#1e0808', light: '#3a0f0f' },
+    { label: 'Aurora',     felt: '#061a1a', light: '#0a2e2e' },
+    { label: 'Cosmos',     felt: '#080d1e', light: '#101830' },
+    { label: 'Starfield',  felt: '#080820', light: '#10103a' },
+    { label: 'Supernova',  felt: '#1a0820', light: '#2e1040' },
+    { label: 'Quantum',    felt: '#060e14', light: '#0d1e28' },
+    { label: 'Plasma',     felt: '#140614', light: '#260a26' },
 ];
 let playmatImage = null;
 let playmatColorIdx = 0;
@@ -2145,30 +2147,21 @@ function playmatBgStyle() {
 }
 
 function applyPlaymat() {
-    const bfs = document.querySelectorAll('.battlefield');
-    const style = playmatBgStyle();
-    bfs.forEach(bf => bf.style.cssText = style);
+    const bf = document.querySelector('#my-battlefield');
+    if (bf) bf.style.cssText = playmatBgStyle();
     updatePlaymatPreview();
 }
 
 function updatePlaymatPreview() {
-    const style = playmatBgStyle();
-    ['pm-prev-me','pm-prev-opp'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.cssText = el.style.cssText + ';' + style.replace(/background:/g,'background:');
-        // Apply directly
-        if (el) { el.style.background = ''; el.setAttribute('style', style); }
-    });
-    // Re-add label spans
-    ['pm-prev-me','pm-prev-opp'].forEach((id, i) => {
-        const el = document.getElementById(id);
-        if (el && !el.querySelector('.playmat-preview-zone-label')) {
-            const lbl = document.createElement('span');
-            lbl.className = 'playmat-preview-zone-label';
-            lbl.textContent = i === 0 ? 'You' : 'Opponent';
-            el.appendChild(lbl);
-        }
-    });
+    const el = document.getElementById('pm-prev-me');
+    if (!el) return;
+    el.setAttribute('style', playmatBgStyle());
+    if (!el.querySelector('.playmat-preview-zone-label')) {
+        const lbl = document.createElement('span');
+        lbl.className = 'playmat-preview-zone-label';
+        lbl.textContent = 'Your Battlefield';
+        el.appendChild(lbl);
+    }
 }
 
 function updatePlaymatTransform() {
@@ -3715,12 +3708,46 @@ function drawCard(owner) {
 // ════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════
+function initStarfield() {
+    const canvas = document.getElementById('starfield');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const stars = Array.from({ length: 320 }, () => ({
+        x: Math.random(),
+        y: Math.random(),
+        r: Math.random() * 1.4 + 0.2,
+        phase: Math.random() * Math.PI * 2,
+        speed: Math.random() * 0.8 + 0.3,
+        color: Math.random() < 0.15 ? [180, 200, 255] : Math.random() < 0.08 ? [255, 220, 180] : [210, 225, 255]
+    }));
+
+    let t = 0;
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        t += 0.016;
+        stars.forEach(s => {
+            const a = 0.25 + 0.75 * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
+            ctx.beginPath();
+            ctx.arc(s.x * canvas.width, s.y * canvas.height, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${s.color[0]},${s.color[1]},${s.color[2]},${a})`;
+            ctx.fill();
+        });
+        requestAnimationFrame(draw);
+    }
+    draw();
+}
+
 function init() {
     renderAll();
     initTokenColors();
     initCCColors();
     initNotes();
     addLog('Welcome! Create/join a room or play locally.', 'system');
+    initStarfield();
     initAuth();
 }
 
