@@ -3157,14 +3157,9 @@ async function authSignUp() {
     if (!email || !password) { setAuthStatus('Enter email and password.'); return; }
     if (password.length < 6) { setAuthStatus('Password must be at least 6 characters.'); return; }
     setAuthStatus('Creating account…', false);
-    const { data, error } = await sbClient.auth.signUp({ email, password });
+    const { data, error } = await sbClient.auth.signUp({ email, password, options: { data: { username } } });
     if (error) { setAuthStatus(error.message); return; }
     currentUser = data.user;
-    const { error: profErr } = await sbClient.from('profiles').insert({ id: currentUser.id, username });
-    if (profErr && profErr.code !== '23505') {
-        setAuthStatus('Account created but profile setup failed: ' + profErr.message);
-        return;
-    }
     userProfile = { id: currentUser.id, username };
     document.getElementById('auth-overlay').classList.add('hidden');
     onAuthSuccess();
