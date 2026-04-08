@@ -332,27 +332,44 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
 .pod-hand { display:flex;gap:2px;align-items:center; }
 .pod-card-mini { width:8px;height:12px;background:linear-gradient(135deg,#1c3257,#162844);border-radius:1px;border:0.5px solid rgba(255,255,255,0.15); }
 
-/* ── GAME LOG / CHAT ── */
-#log-panel { position:fixed;bottom:58px;left:12px;width:310px;height:340px;background:rgba(10,18,13,0.96);border:1px solid rgba(255,255,255,0.1);border-radius:14px;z-index:7999;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,0.6);backdrop-filter:blur(10px);transform:translateY(calc(100% + 70px));transition:transform 0.22s ease;pointer-events:none; }
+/* ── GAME LOG ── */
+#log-panel { position:fixed;bottom:58px;left:12px;width:310px;height:340px;background:rgba(4,12,26,0.97);border:1px solid rgba(100,160,255,0.12);border-radius:14px;z-index:7999;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,0.7);transform:translateY(calc(100% + 70px));transition:transform 0.22s ease;pointer-events:none; }
 #log-panel.open { transform:translateY(0);pointer-events:auto; }
-#log-btn { display:none; } /* merged into toolbar */
-.log-header { display:flex;align-items:center;justify-content:space-between;padding:10px 12px 8px;border-bottom:1px solid rgba(255,255,255,0.07);flex-shrink:0; }
+#log-btn { display:none; }
+.log-header { display:flex;align-items:center;justify-content:space-between;padding:10px 12px 8px;border-bottom:1px solid rgba(100,160,255,0.08);flex-shrink:0; }
 .log-title { font-size:0.8rem;font-weight:800;color:var(--gold); }
-.log-roll-btn { padding:3px 9px;background:rgba(200,168,75,0.15);border:1px solid rgba(200,168,75,0.3);color:var(--gold);border-radius:6px;cursor:pointer;font-size:0.68rem;font-weight:800;transition:all 0.12s; }
-.log-roll-btn:hover { background:rgba(200,168,75,0.28); }
+.log-roll-btn { padding:3px 9px;background:rgba(125,211,252,0.1);border:1px solid rgba(125,211,252,0.25);color:var(--gold);border-radius:6px;cursor:pointer;font-size:0.68rem;font-weight:800;transition:all 0.12s; }
+.log-roll-btn:hover { background:rgba(125,211,252,0.2); }
 .log-msgs { flex:1;overflow-y:auto;padding:8px 10px;display:flex;flex-direction:column;gap:4px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.08) transparent; }
 .log-msg { font-size:0.72rem;line-height:1.5;color:var(--text-sec);padding:2px 0; }
 .log-msg.system { color:var(--text-sec); }
 .log-msg.event { color:var(--text);font-weight:600; }
 .log-msg.roll { color:#a78bfa;font-weight:700; }
 .log-msg.winner { color:#facc15;font-weight:900;font-size:0.78rem;text-align:center;padding:4px 0; }
-.log-msg.chat-me { color:#86efac; }
-.log-msg.chat-other { color:#93c5fd; }
-.log-input-row { display:flex;gap:6px;padding:8px 10px;border-top:1px solid rgba(255,255,255,0.07);flex-shrink:0; }
-.log-input { flex:1;padding:6px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;color:var(--text);font-size:0.76rem;outline:none; }
-.log-input:focus { border-color:var(--gold); }
-.log-input::placeholder { color:var(--text-sec); }
-.log-send { padding:6px 10px;background:var(--gold);color:#1a1200;border:none;border-radius:7px;cursor:pointer;font-size:0.72rem;font-weight:800; }
+
+/* ── CHAT PANEL ── */
+#chat-panel { position:fixed;bottom:58px;right:12px;width:300px;height:400px;background:rgba(4,12,26,0.97);border:1px solid rgba(100,160,255,0.15);border-radius:14px;z-index:7999;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,0.7);transform:translateY(calc(100% + 70px));transition:transform 0.22s ease;pointer-events:none; }
+#chat-panel.open { transform:translateY(0);pointer-events:auto; }
+.chat-header { display:flex;align-items:center;justify-content:space-between;padding:10px 12px 8px;border-bottom:1px solid rgba(100,160,255,0.1);flex-shrink:0; }
+.chat-title { font-size:0.8rem;font-weight:800;color:var(--gold); }
+.chat-close { background:none;border:none;color:var(--text-sec);font-size:1.1rem;cursor:pointer;line-height:1;padding:0 2px; }
+.chat-close:hover { color:var(--text); }
+.chat-msgs { flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;scrollbar-color:rgba(100,160,255,0.1) transparent; }
+.chat-msg-wrap { display:flex;flex-direction:column;max-width:82%; }
+.chat-msg-wrap.mine { align-self:flex-end;align-items:flex-end; }
+.chat-msg-wrap.theirs { align-self:flex-start;align-items:flex-start; }
+.chat-sender { font-size:0.62rem;font-weight:700;color:var(--text-sec);margin-bottom:3px;padding:0 4px; }
+.chat-bubble { padding:8px 11px;border-radius:14px;font-size:0.76rem;line-height:1.5;word-break:break-word; }
+.chat-msg-wrap.mine .chat-bubble { background:rgba(125,211,252,0.15);border:1px solid rgba(125,211,252,0.3);color:var(--text);border-bottom-right-radius:3px; }
+.chat-msg-wrap.theirs .chat-bubble { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:var(--text);border-bottom-left-radius:3px; }
+.chat-empty { font-size:0.75rem;color:var(--text-sec);text-align:center;margin:auto;opacity:0.6; }
+.chat-input-row { display:flex;gap:6px;padding:8px 10px;border-top:1px solid rgba(100,160,255,0.1);flex-shrink:0; }
+.chat-input { flex:1;padding:7px 11px;background:rgba(255,255,255,0.06);border:1px solid rgba(100,160,255,0.15);border-radius:9px;color:var(--text);font-size:0.78rem;outline:none; }
+.chat-input:focus { border-color:var(--gold); }
+.chat-input::placeholder { color:var(--text-sec); }
+.chat-send { padding:7px 12px;background:var(--gold);color:#040c1a;border:none;border-radius:9px;cursor:pointer;font-size:0.72rem;font-weight:800;transition:opacity 0.12s; }
+.chat-send:hover { opacity:0.85; }
+.chat-badge { position:absolute;top:-5px;right:-5px;background:#f87171;color:#fff;border-radius:50%;min-width:17px;height:17px;font-size:0.58rem;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0 3px;pointer-events:none;line-height:1; }
 
 /* ── OPP HAND TOOLTIP ── */
 .opp-card-tooltip {
@@ -1093,17 +1110,26 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
 <!-- Remote player pods -->
 <div id="remote-players"></div>
 
-<!-- Game Log / Chat -->
-<button id="log-btn" onclick="toggleLog()">💬 Log</button>
+<!-- Game Log -->
+<button id="log-btn" onclick="toggleLog()">📋 Log</button>
 <div id="log-panel">
     <div class="log-header">
-        <span class="log-title">💬 Game Log</span>
+        <span class="log-title">📋 Game Log</span>
         <button class="log-roll-btn" onclick="rollForFirst()">🎲 Who Goes First?</button>
     </div>
     <div class="log-msgs" id="log-msgs"></div>
-    <div class="log-input-row" id="log-input-row" style="display:none">
-        <input class="log-input" id="log-input" placeholder="Chat…" maxlength="200" onkeydown="if(e.key==='Enter')sendChat()">
-        <button class="log-send" onclick="sendChat()">Send</button>
+</div>
+
+<!-- Chat Panel -->
+<div id="chat-panel">
+    <div class="chat-header">
+        <span class="chat-title">💬 Chat</span>
+        <button class="chat-close" onclick="toggleChatPanel()">×</button>
+    </div>
+    <div class="chat-msgs" id="chat-msgs"><span class="chat-empty">No messages yet.<br>Say hello!</span></div>
+    <div class="chat-input-row">
+        <input class="chat-input" id="chat-input" placeholder="Type a message…" maxlength="300" onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="chat-send" onclick="sendChat()">Send</button>
     </div>
 </div>
 
@@ -1114,7 +1140,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
     <button class="tb-btn" onclick="togglePanel('custom-card-panel')" title="Custom Card">✏️<span class="tb-tooltip">Custom Card</span></button>
     <button class="tb-btn" onclick="togglePanel('life-panel')" title="Life History">❤️<span class="tb-tooltip">Life History</span></button>
     <button class="tb-btn" onclick="togglePanel('notes-panel')" title="Notes">📝<span class="tb-tooltip">Notes</span></button>
-    <button class="tb-btn" id="log-tb-btn" onclick="toggleLog()" title="Log">💬<span class="tb-tooltip">Game Log</span></button>
+    <button class="tb-btn" id="log-tb-btn" onclick="toggleLog()" title="Log">📋<span class="tb-tooltip">Game Log</span></button>
+    <button class="tb-btn" id="chat-tb-btn" onclick="toggleChatPanel()" title="Chat" style="position:relative">💬<span class="tb-tooltip">Chat</span><span class="chat-badge" id="chat-badge" style="display:none">0</span></button>
     <button class="tb-btn" onclick="undoAction()" title="Undo">↩<span class="tb-tooltip">Undo (Ctrl+Z)</span></button>
     <button class="tb-btn" id="auth-user-btn" onclick="togglePanel('user-panel')" title="Account" style="display:none">👤<span class="tb-tooltip" id="auth-user-tooltip">Account</span></button>
 </div>
@@ -3340,7 +3367,6 @@ function initOnline() {
         .subscribe(status => {
             if (status === 'SUBSCRIBED') {
                 onlineMode = true;
-                document.getElementById('log-input-row').style.display = '';
                 addLog(`Connected to room ${roomId}`, 'system');
                 updateMyPod();
             }
@@ -3439,7 +3465,7 @@ function handleOnlineEvent(payload) {
     }
 
     if (type === 'chat') {
-        addLog(`${name}: ${payload.msg}`, 'chat-other');
+        addChatMessage(name, payload.msg, false);
         return;
     }
 
@@ -3586,19 +3612,62 @@ function toggleLog() {
     }
 }
 
+let chatUnread = 0;
+
+function toggleChatPanel() {
+    const panel = document.getElementById('chat-panel');
+    const btn   = document.getElementById('chat-tb-btn');
+    const open  = panel.classList.toggle('open');
+    btn.classList.toggle('active', open);
+    if (open) {
+        chatUnread = 0;
+        document.getElementById('chat-badge').style.display = 'none';
+        const msgs = document.getElementById('chat-msgs');
+        msgs.scrollTop = msgs.scrollHeight;
+        setTimeout(() => document.getElementById('chat-input').focus(), 50);
+    }
+}
+
+function addChatMessage(senderName, msg, isMe) {
+    const container = document.getElementById('chat-msgs');
+    // Remove empty placeholder
+    const empty = container.querySelector('.chat-empty');
+    if (empty) empty.remove();
+
+    const wrap = document.createElement('div');
+    wrap.className = 'chat-msg-wrap ' + (isMe ? 'mine' : 'theirs');
+
+    const sender = document.createElement('div');
+    sender.className = 'chat-sender';
+    sender.textContent = senderName;
+
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble';
+    bubble.textContent = msg;
+
+    wrap.appendChild(sender);
+    wrap.appendChild(bubble);
+    container.appendChild(wrap);
+    container.scrollTop = container.scrollHeight;
+
+    // Badge if panel is closed
+    const panel = document.getElementById('chat-panel');
+    if (!panel.classList.contains('open') && !isMe) {
+        chatUnread++;
+        const badge = document.getElementById('chat-badge');
+        badge.textContent = chatUnread > 99 ? '99+' : chatUnread;
+        badge.style.display = 'flex';
+    }
+}
+
 function sendChat() {
-    const input = document.getElementById('log-input');
+    const input = document.getElementById('chat-input');
     const msg = input.value.trim();
     if (!msg) return;
     input.value = '';
-    addLog(`${myName}: ${msg}`, 'chat-me');
+    addChatMessage(myName, msg, true);
     broadcastEvent('chat', { msg });
 }
-
-// Fix keydown reference in HTML
-document.getElementById('log-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') sendChat();
-});
 
 // ════════════════════════════════════════
 //  WHO GOES FIRST
