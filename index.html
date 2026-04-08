@@ -692,6 +692,55 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
 .deck-action-btn.del { color: #ef4444; }
 .deck-action-btn.del:hover { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); }
 .no-decks { padding: 24px 16px; text-align: center; color: var(--text-sec); font-size: 0.8rem; line-height: 1.7; }
+/* ── EXTRA COUNTERS ROW ── */
+.info-bar-extra { display:flex;align-items:center;gap:8px;padding:3px 10px 4px;flex-wrap:wrap;border-top:1px solid rgba(100,160,255,0.06);background:rgba(0,0,0,0.2);border-radius:0 0 8px 8px;flex-shrink:0; }
+.ec-group { display:flex;align-items:center;gap:3px; }
+.ec-label { font-size:0.58rem;color:var(--text-sec);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;min-width:12px; }
+.ec-val { font-size:0.76rem;font-weight:900;color:var(--text);min-width:20px;text-align:center; }
+.ec-btn { width:16px;height:16px;border:none;background:rgba(255,255,255,0.07);color:var(--text-sec);border-radius:3px;cursor:pointer;font-size:0.7rem;line-height:1;padding:0;display:flex;align-items:center;justify-content:center;transition:background 0.1s; }
+.ec-btn:hover { background:rgba(125,211,252,0.2);color:var(--text); }
+.ec-sep { width:1px;height:14px;background:rgba(255,255,255,0.07); }
+
+/* ── MANA POOL ── */
+.mana-pool-row { display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0; }
+.mana-btn { width:46px;height:46px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);cursor:pointer;font-weight:900;font-size:0.72rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:transform 0.1s,box-shadow 0.12s;position:relative;padding:0; }
+.mana-btn:hover { transform:scale(1.1); }
+.mana-btn:active { transform:scale(0.95); }
+.mana-sym { font-size:0.95rem;line-height:1; }
+.mana-count { font-size:0.68rem;font-weight:900;line-height:1; }
+.mana-btn.W { background:rgba(248,240,200,0.12);border-color:rgba(248,240,200,0.35);color:#f0e8b0; }
+.mana-btn.U { background:rgba(60,120,220,0.18);border-color:rgba(80,150,255,0.4);color:#7eb8f7; }
+.mana-btn.B { background:rgba(80,50,110,0.25);border-color:rgba(130,90,170,0.35);color:#c49ee0; }
+.mana-btn.R { background:rgba(200,60,40,0.18);border-color:rgba(220,90,70,0.35);color:#f97060; }
+.mana-btn.G { background:rgba(40,160,80,0.18);border-color:rgba(70,190,110,0.35);color:#6bc48a; }
+.mana-btn.C { background:rgba(120,120,150,0.15);border-color:rgba(160,160,190,0.25);color:#aaaacc; }
+.mana-btn.has-mana { box-shadow:0 0 10px 2px currentColor;border-width:2px; }
+.mana-hint { font-size:0.64rem;color:var(--text-sec);text-align:center;margin-top:2px; }
+
+/* ── TURN BANNER ── */
+#turn-banner { position:fixed;top:0;left:50%;transform:translateX(-50%);background:rgba(4,12,26,0.9);border:1px solid rgba(125,211,252,0.25);border-top:none;border-radius:0 0 12px 12px;padding:5px 20px;font-size:0.7rem;font-weight:900;letter-spacing:0.08em;z-index:2000;display:none;white-space:nowrap;color:var(--text-sec); }
+#turn-banner.my-turn { background:rgba(125,211,252,0.12);border-color:rgba(125,211,252,0.5);color:#7dd3fc;animation:turnPulse 2.5s ease-in-out infinite; }
+@keyframes turnPulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+.phase-my-turn-btn { background:rgba(125,211,252,0.1)!important;border-color:rgba(125,211,252,0.3)!important;color:var(--gold)!important;margin-left:6px; }
+.phase-my-turn-btn:hover { background:rgba(125,211,252,0.22)!important; }
+
+/* ── CARD REVEAL OVERLAY ── */
+#reveal-overlay { position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:50000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;backdrop-filter:blur(4px); }
+#reveal-overlay.show { display:flex; }
+.reveal-from { font-size:0.7rem;color:var(--text-sec);font-weight:700;letter-spacing:0.1em;text-transform:uppercase; }
+.reveal-card-name { font-size:1.1rem;font-weight:900;color:var(--gold);margin-top:4px; }
+#reveal-img { max-width:240px;max-height:340px;border-radius:12px;box-shadow:0 0 50px rgba(125,211,252,0.35),0 20px 60px rgba(0,0,0,0.9); }
+#reveal-render { max-width:240px; }
+.reveal-dismiss { padding:8px 24px;background:rgba(125,211,252,0.1);border:1px solid rgba(125,211,252,0.3);color:var(--gold);border-radius:8px;cursor:pointer;font-size:0.78rem;font-weight:800;margin-top:4px; }
+.reveal-dismiss:hover { background:rgba(125,211,252,0.2); }
+
+/* ── GAME TIMER ── */
+#game-timer { position:fixed;bottom:50px;right:14px;font-size:0.65rem;font-weight:900;color:var(--text-sec);background:rgba(4,12,26,0.88);border:1px solid rgba(100,160,255,0.1);border-radius:7px;padding:4px 9px;z-index:1000;display:none;letter-spacing:0.06em;cursor:default; }
+#game-timer.running { display:block; }
+
+/* ── CONCEDE ── */
+.concede-btn { background:rgba(239,68,68,0.1)!important;border-color:rgba(239,68,68,0.3)!important;color:#f87171!important; }
+.concede-btn:hover { background:rgba(239,68,68,0.22)!important; }
 </style>
 </head>
 <body>
@@ -717,6 +766,15 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
                 <button class="info-btn" onclick="drawCard('opp')">Draw</button>
                 <button class="info-btn" onclick="untapAll('opp')">Untap All</button>
             </div>
+        </div>
+        <div class="info-bar-extra">
+            <div class="ec-group" title="Commander Tax"><span class="ec-label">Tax</span><button class="ec-btn" onclick="adjustCmdTax('opp',-2)">−</button><span class="ec-val" id="opp-cmd-tax">0</span><button class="ec-btn" onclick="adjustCmdTax('opp',2)">+</button></div>
+            <div class="ec-sep"></div>
+            <div class="ec-group" title="Poison"><span class="ec-label">☠</span><button class="ec-btn" onclick="adjustSpecialCounter('opp','poison',-1)">−</button><span class="ec-val" id="opp-poison">0</span><button class="ec-btn" onclick="adjustSpecialCounter('opp','poison',1)">+</button></div>
+            <div class="ec-sep"></div>
+            <div class="ec-group" title="Energy"><span class="ec-label">⚡</span><button class="ec-btn" onclick="adjustSpecialCounter('opp','energy',-1)">−</button><span class="ec-val" id="opp-energy">0</span><button class="ec-btn" onclick="adjustSpecialCounter('opp','energy',1)">+</button></div>
+            <div class="ec-sep"></div>
+            <div class="ec-group" title="Experience"><span class="ec-label">✦</span><button class="ec-btn" onclick="adjustSpecialCounter('opp','experience',-1)">−</button><span class="ec-val" id="opp-experience">0</span><button class="ec-btn" onclick="adjustSpecialCounter('opp','experience',1)">+</button></div>
         </div>
         <div class="hand-zone opp-hand" id="opp-hand" data-zone="hand" data-owner="opp"></div>
         <div class="battlefield" id="opp-battlefield" data-zone="battlefield" data-owner="opp">
@@ -767,6 +825,35 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
             <div class="info-actions">
                 <button class="info-btn" onclick="drawCard('me')">Draw</button>
                 <button class="info-btn" onclick="untapAll('me')">Untap All</button>
+            </div>
+        </div>
+        <div class="info-bar-extra">
+            <div class="ec-group" title="Commander Tax (increments automatically when casting from command zone)">
+                <span class="ec-label">Tax</span>
+                <button class="ec-btn" onclick="adjustCmdTax('me',-2)">−</button>
+                <span class="ec-val" id="my-cmd-tax">0</span>
+                <button class="ec-btn" onclick="adjustCmdTax('me',2)">+</button>
+            </div>
+            <div class="ec-sep"></div>
+            <div class="ec-group" title="Poison Counters (10 = lose)">
+                <span class="ec-label">☠</span>
+                <button class="ec-btn" onclick="adjustSpecialCounter('me','poison',-1)">−</button>
+                <span class="ec-val" id="my-poison">0</span>
+                <button class="ec-btn" onclick="adjustSpecialCounter('me','poison',1)">+</button>
+            </div>
+            <div class="ec-sep"></div>
+            <div class="ec-group" title="Energy Counters">
+                <span class="ec-label">⚡</span>
+                <button class="ec-btn" onclick="adjustSpecialCounter('me','energy',-1)">−</button>
+                <span class="ec-val" id="my-energy">0</span>
+                <button class="ec-btn" onclick="adjustSpecialCounter('me','energy',1)">+</button>
+            </div>
+            <div class="ec-sep"></div>
+            <div class="ec-group" title="Experience Counters">
+                <span class="ec-label">✦</span>
+                <button class="ec-btn" onclick="adjustSpecialCounter('me','experience',-1)">−</button>
+                <span class="ec-val" id="my-experience">0</span>
+                <button class="ec-btn" onclick="adjustSpecialCounter('me','experience',1)">+</button>
             </div>
         </div>
         <div class="hand-zone" id="my-hand" data-zone="hand" data-owner="me"></div>
@@ -1102,6 +1189,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
         <div class="lobby-subtitle">Share this code with your friends</div>
         <div class="lobby-room-code" id="lobby-room-code-display">------</div>
         <div class="lobby-tag" id="lobby-player-count">1 player connected</div>
+        <button class="lobby-btn secondary" id="copy-invite-btn" onclick="copyInviteLink()">🔗 Copy Invite Link</button>
         <button class="lobby-btn secondary" onclick="startGameFromLobby()">▶ Start Game</button>
         <button class="lobby-btn secondary" style="opacity:0.5" onclick="lobbyLocal()">Cancel (play locally)</button>
     </div>
@@ -1143,6 +1231,9 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
     <button class="tb-btn" id="log-tb-btn" onclick="toggleLog()" title="Log">📋<span class="tb-tooltip">Game Log</span></button>
     <button class="tb-btn" id="chat-tb-btn" onclick="toggleChatPanel()" title="Chat" style="position:relative">💬<span class="tb-tooltip">Chat</span><span class="chat-badge" id="chat-badge" style="display:none">0</span></button>
     <button class="tb-btn" onclick="undoAction()" title="Undo">↩<span class="tb-tooltip">Undo (Ctrl+Z)</span></button>
+    <button class="tb-btn" onclick="togglePanel('mana-panel')" title="Mana Pool">💧<span class="tb-tooltip">Mana Pool</span></button>
+    <button class="tb-btn concede-btn" onclick="concede()" title="Concede">🏳<span class="tb-tooltip">Concede</span></button>
+    <button class="tb-btn" id="sound-btn" onclick="toggleSound()" title="Sound On/Off">🔊<span class="tb-tooltip" id="sound-tip">Sound On</span></button>
     <button class="tb-btn" id="auth-user-btn" onclick="togglePanel('user-panel')" title="Account" style="display:none">👤<span class="tb-tooltip" id="auth-user-tooltip">Account</span></button>
 </div>
 
@@ -1255,6 +1346,23 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
     </div>
 </div>
 
+<!-- Mana Pool Panel -->
+<div class="float-panel" id="mana-panel">
+    <div class="fp-header"><span class="fp-title">💧 Mana Pool</span><button class="fp-close" onclick="togglePanel('mana-panel')">×</button></div>
+    <div class="fp-body">
+        <div class="mana-pool-row">
+            <button class="mana-btn W" id="mana-btn-W" onclick="addMana('W')" oncontextmenu="removeMana('W');return false" title="White — Left click +1, Right click −1"><span class="mana-sym">W</span><span class="mana-count" id="mana-W">0</span></button>
+            <button class="mana-btn U" id="mana-btn-U" onclick="addMana('U')" oncontextmenu="removeMana('U');return false" title="Blue"><span class="mana-sym">U</span><span class="mana-count" id="mana-U">0</span></button>
+            <button class="mana-btn B" id="mana-btn-B" onclick="addMana('B')" oncontextmenu="removeMana('B');return false" title="Black"><span class="mana-sym">B</span><span class="mana-count" id="mana-B">0</span></button>
+            <button class="mana-btn R" id="mana-btn-R" onclick="addMana('R')" oncontextmenu="removeMana('R');return false" title="Red"><span class="mana-sym">R</span><span class="mana-count" id="mana-R">0</span></button>
+            <button class="mana-btn G" id="mana-btn-G" onclick="addMana('G')" oncontextmenu="removeMana('G');return false" title="Green"><span class="mana-sym">G</span><span class="mana-count" id="mana-G">0</span></button>
+            <button class="mana-btn C" id="mana-btn-C" onclick="addMana('C')" oncontextmenu="removeMana('C');return false" title="Colorless"><span class="mana-sym">◆</span><span class="mana-count" id="mana-C">0</span></button>
+        </div>
+        <div class="mana-hint">Left click +1 · Right click −1</div>
+        <button class="sleeve-clear-btn" onclick="clearManaPool()" style="margin-top:8px;width:100%">Clear All Mana</button>
+    </div>
+</div>
+
 <!-- User Account Panel -->
 <div class="float-panel" id="user-panel">
     <div class="fp-header"><span class="fp-title">👤 Account</span><button class="fp-close" onclick="togglePanel('user-panel')">×</button></div>
@@ -1264,6 +1372,21 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
         <button class="sleeve-clear-btn" onclick="authSignOut()" style="width:100%">Sign Out</button>
     </div>
 </div>
+
+<!-- Turn Banner -->
+<div id="turn-banner"></div>
+
+<!-- Card Reveal Overlay -->
+<div id="reveal-overlay">
+    <div class="reveal-from" id="reveal-from"></div>
+    <div class="reveal-card-name" id="reveal-card-name"></div>
+    <img id="reveal-img" style="display:none" alt="Revealed card">
+    <div id="reveal-render"></div>
+    <button class="reveal-dismiss" onclick="closeReveal()">Dismiss</button>
+</div>
+
+<!-- Game Timer -->
+<div id="game-timer" title="Game duration">⏱ 0:00</div>
 
 <!-- Undo Toast -->
 <div id="undo-toast"><span id="undo-toast-msg">Action undone</span><button onclick="undoAction()">Undo (Ctrl+Z)</button></div>
@@ -1302,10 +1425,10 @@ let nextId = 1;
 const cards = {}; // id → card object
 
 const gs = {
-    me:  { life: 40, cmdDmg: 0, hand: [], battlefield: [], library: [], graveyard: [], exile: [], command: [] },
-    opp: { life: 40, cmdDmg: 0, hand: [], battlefield: [], library: [], graveyard: [], exile: [], command: [] },
-    p3:  { life: 40, cmdDmg: 0, hand: [], battlefield: [], library: [], graveyard: [], exile: [], command: [] },
-    p4:  { life: 40, cmdDmg: 0, hand: [], battlefield: [], library: [], graveyard: [], exile: [], command: [] },
+    me:  { life: 40, cmdDmg: 0, cmdTax: 0, poison: 0, energy: 0, experience: 0, hand: [], battlefield: [], library: [], graveyard: [], exile: [], command: [] },
+    opp: { life: 40, cmdDmg: 0, cmdTax: 0, poison: 0, energy: 0, experience: 0, hand: [], battlefield: [], library: [], graveyard: [], exile: [], command: [] },
+    p3:  { life: 40, cmdDmg: 0, cmdTax: 0, poison: 0, energy: 0, experience: 0, hand: [], battlefield: [], library: [], graveyard: [], exile: [], command: [] },
+    p4:  { life: 40, cmdDmg: 0, cmdTax: 0, poison: 0, energy: 0, experience: 0, hand: [], battlefield: [], library: [], graveyard: [], exile: [], command: [] },
     phase: 'main1',
     sleeve: null,
 };
@@ -1519,7 +1642,7 @@ function renderPhases() {
     const bar = document.getElementById('phase-bar');
     bar.innerHTML = PHASES.map(p =>
         `<button class="phase-btn${gs.phase === p.id ? ' active' : ''}" onclick="setPhase('${p.id}')">${p.label}</button>`
-    ).join('');
+    ).join('') + `<button class="phase-btn phase-my-turn-btn" onclick="announceMyTurn()">⭐ My Turn</button>`;
 }
 
 function renderAll() {
@@ -1602,6 +1725,8 @@ function setPhase(phaseId) {
     gs.phase = phaseId;
     if (phaseId === 'untap') untapAll('me');
     renderPhases();
+    broadcastEvent('phase', { phase: phaseId });
+    playSound('phase');
 }
 
 // ════════════════════════════════════════
@@ -1763,7 +1888,11 @@ function showCtx(id, e) {
         sep();
     }
     if (card.zone === 'command') {
-        add('⚔️ Cast (to Battlefield)', () => moveCard(id, 'battlefield', card.owner));
+        add('⚔️ Cast (to Battlefield)', () => {
+            moveCard(id, 'battlefield', card.owner);
+            adjustCmdTax(card.owner, 2);
+            addLog(`${card.owner === 'me' ? myName : card.owner} cast commander — tax now ${gs[card.owner].cmdTax}`, 'event');
+        });
         sep();
     }
     add('✋ To Hand',                () => moveCard(id, 'hand', card.owner));
@@ -1778,6 +1907,7 @@ function showCtx(id, e) {
     add('🔢 Loyalty Counter',        () => addCounter(id, 'loyalty'));
     sep();
     add('🔍 Zoom',                   () => zoomCard(id));
+    add('👁 Show to All Players',    () => revealCardToAll(id));
     sep();
     add('🖼️ Change Art',             () => setCustomArt(id));
     if (card.customImage) add('↩ Reset Art', () => { card.customImage = null; renderAll(); });
@@ -2324,6 +2454,7 @@ function shufflePile() {
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     viewPile(pileContext.owner, pileContext.zone);
+    playSound('shuffle');
 }
 
 function closePile() { document.getElementById('pile-viewer').classList.remove('open'); pileContext = null; }
@@ -2791,6 +2922,7 @@ function togglePanel(id) {
 let diceRollHistory = [];
 
 function rollDie(sides) {
+    playSound('dice');
     const result = Math.floor(Math.random() * sides) + 1;
     diceRollHistory.unshift({ sides, result });
     if (diceRollHistory.length > 12) diceRollHistory.pop();
@@ -3306,6 +3438,7 @@ function lobbyLocal() {
     document.getElementById('lobby-overlay').classList.add('hidden');
     document.getElementById('lobby-waiting').style.display = 'none';
     addLog(`Local 4-player — ${myName}, ${p2name}, ${p3name}, ${p4name}. Use 🎲 Who Goes First? to roll off!`, 'system');
+    startGameTimer();
     renderAll();
 }
 
@@ -3341,6 +3474,7 @@ function startGameFromLobby() {
     document.getElementById('lobby-waiting').style.display = 'none';
     broadcastEvent('game_start', { players: Object.assign({ p0: { name: myName } }, remotePlayers) });
     addLog('Game started! Use 🎲 Who Goes First? to roll off.', 'system');
+    startGameTimer();
 }
 
 function setLobbyStatus(msg) {
@@ -3425,6 +3559,7 @@ function handleOnlineEvent(payload) {
     if (type === 'game_start') {
         document.getElementById('lobby-waiting').style.display = 'none';
         addLog('Game started!', 'event');
+        startGameTimer();
         return;
     }
 
@@ -3466,6 +3601,7 @@ function handleOnlineEvent(payload) {
 
     if (type === 'chat') {
         addChatMessage(name, payload.msg, false);
+        playSound('chat');
         return;
     }
 
@@ -3483,6 +3619,23 @@ function handleOnlineEvent(payload) {
             remotePlayers[from].playmatColorIdx = payload.colorIdx ?? 0;
             renderRemotePlayers();
         }
+        return;
+    }
+
+    if (type === 'turn') {
+        showTurnBanner(name, false);
+        addLog(`${name} started their turn.`, 'event');
+        return;
+    }
+
+    if (type === 'card_reveal') {
+        showRevealOverlay(name, payload.cardName, payload.imageUrl);
+        return;
+    }
+
+    if (type === 'concede') {
+        addLog(`🏳 ${name} has conceded.`, 'event');
+        playSound('concede');
         return;
     }
 
@@ -3754,6 +3907,7 @@ function changeLife(owner, delta) {
         const ownerLabel = owner === 'me' ? myName : (owner === 'opp' ? (remotePlayers['local-p2']?.name || 'Opp') : (remotePlayers['local-' + owner]?.name || owner.toUpperCase()));
         addLog(`${ownerLabel}: life ${actual > 0 ? '+' : ''}${actual} → ${gs[owner].life}`, 'event');
         if (owner === 'me') broadcastEvent('life_change', { delta: actual, newLife: gs.me.life });
+        if (actual < 0) playSound('lifeLoss'); else playSound('lifeGain');
     }
     renderLife();
     updateMyPod();
@@ -3772,7 +3926,277 @@ function drawCard(owner) {
         broadcastEvent('draw', { count: 1, handCount: gs.me.hand.length, libCount: gs.me.library.length });
         updateMyPod();
     }
+    playSound('draw');
 }
+
+// ════════════════════════════════════════
+//  EXTRA COUNTERS (Tax / Poison / Energy / Experience)
+// ════════════════════════════════════════
+function adjustCmdTax(owner, delta) {
+    gs[owner].cmdTax = Math.max(0, (gs[owner].cmdTax || 0) + delta);
+    const el = document.getElementById(pfx(owner) + '-cmd-tax');
+    if (el) el.textContent = gs[owner].cmdTax;
+}
+
+function adjustSpecialCounter(owner, type, delta) {
+    gs[owner][type] = Math.max(0, (gs[owner][type] || 0) + delta);
+    const el = document.getElementById(pfx(owner) + '-' + type);
+    if (el) el.textContent = gs[owner][type];
+    if (type === 'poison' && gs[owner][type] >= 10) {
+        addLog(`⚠️ ${owner === 'me' ? myName : owner} has 10 poison counters!`, 'event');
+        playSound('lifeLoss');
+    }
+}
+
+// ════════════════════════════════════════
+//  MANA POOL
+// ════════════════════════════════════════
+const manaPool = { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 };
+
+function addMana(type) {
+    manaPool[type]++;
+    updateManaUI();
+    playSound('mana');
+}
+
+function removeMana(type) {
+    if (manaPool[type] > 0) { manaPool[type]--; updateManaUI(); }
+}
+
+function clearManaPool() {
+    Object.keys(manaPool).forEach(k => manaPool[k] = 0);
+    updateManaUI();
+}
+
+function updateManaUI() {
+    Object.keys(manaPool).forEach(k => {
+        const count = document.getElementById('mana-' + k);
+        const btn   = document.getElementById('mana-btn-' + k);
+        if (count) count.textContent = manaPool[k];
+        if (btn)   btn.classList.toggle('has-mana', manaPool[k] > 0);
+    });
+}
+
+// ════════════════════════════════════════
+//  TURN INDICATOR
+// ════════════════════════════════════════
+function announceMyTurn() {
+    showTurnBanner(myName, true);
+    broadcastEvent('turn', { name: myName });
+    playSound('turn');
+    addLog(`${myName} started their turn.`, 'event');
+}
+
+function showTurnBanner(name, isMe) {
+    const banner = document.getElementById('turn-banner');
+    banner.textContent = isMe ? `⭐ YOUR TURN` : `${name}'s Turn`;
+    banner.className   = isMe ? 'my-turn' : '';
+    banner.style.display = 'block';
+}
+
+// ════════════════════════════════════════
+//  CARD REVEAL
+// ════════════════════════════════════════
+function revealCardToAll(id) {
+    const card = cards[id];
+    if (!card) return;
+    showRevealOverlay(myName, card.name, card.customImage || card.image);
+    broadcastEvent('card_reveal', { cardName: card.name, imageUrl: card.customImage || card.image });
+    addLog(`${myName} revealed ${card.name}.`, 'event');
+}
+
+function showRevealOverlay(from, cardName, imageUrl) {
+    document.getElementById('reveal-from').textContent = `${from} reveals:`;
+    document.getElementById('reveal-card-name').textContent = cardName;
+    const img = document.getElementById('reveal-img');
+    if (imageUrl) {
+        img.src = imageUrl;
+        img.style.display = '';
+        document.getElementById('reveal-render').innerHTML = '';
+    } else {
+        img.style.display = 'none';
+        document.getElementById('reveal-render').innerHTML =
+            `<div style="width:200px;height:280px;background:rgba(4,12,26,0.9);border:2px solid var(--gold);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:var(--gold);padding:16px;text-align:center">${cardName}</div>`;
+    }
+    document.getElementById('reveal-overlay').classList.add('show');
+    playSound('reveal');
+}
+
+function closeReveal() {
+    document.getElementById('reveal-overlay').classList.remove('show');
+}
+
+// ════════════════════════════════════════
+//  SOUND ENGINE (Web Audio API)
+// ════════════════════════════════════════
+let _audioCtx = null;
+let soundEnabled = true;
+
+function getAudioCtx() {
+    if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return _audioCtx;
+}
+
+function playSound(type) {
+    if (!soundEnabled) return;
+    try {
+        const ctx = getAudioCtx();
+        const t = ctx.currentTime;
+        const g = ctx.createGain();
+        g.connect(ctx.destination);
+
+        if (type === 'draw') {
+            // Short high ping
+            const o = ctx.createOscillator();
+            o.type = 'sine'; o.frequency.setValueAtTime(880, t); o.frequency.exponentialRampToValueAtTime(660, t + 0.12);
+            g.gain.setValueAtTime(0.18, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+            o.connect(g); o.start(t); o.stop(t + 0.18);
+        } else if (type === 'shuffle') {
+            // Noise burst
+            const buf = ctx.createBuffer(1, ctx.sampleRate * 0.15, ctx.sampleRate);
+            const d = buf.getChannelData(0);
+            for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+            const src = ctx.createBufferSource();
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'bandpass'; filter.frequency.value = 1200; filter.Q.value = 0.5;
+            src.buffer = buf; src.connect(filter); filter.connect(g);
+            g.gain.setValueAtTime(0.2, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+            src.start(t);
+        } else if (type === 'lifeLoss') {
+            const o = ctx.createOscillator();
+            o.type = 'sawtooth'; o.frequency.setValueAtTime(200, t); o.frequency.exponentialRampToValueAtTime(80, t + 0.25);
+            g.gain.setValueAtTime(0.15, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+            o.connect(g); o.start(t); o.stop(t + 0.28);
+        } else if (type === 'lifeGain') {
+            const o = ctx.createOscillator();
+            o.type = 'sine'; o.frequency.setValueAtTime(440, t); o.frequency.exponentialRampToValueAtTime(660, t + 0.15);
+            g.gain.setValueAtTime(0.12, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+            o.connect(g); o.start(t); o.stop(t + 0.2);
+        } else if (type === 'dice') {
+            [0, 0.06, 0.12].forEach(delay => {
+                const o = ctx.createOscillator();
+                o.type = 'square'; o.frequency.value = 300 + Math.random() * 400;
+                const gd = ctx.createGain();
+                gd.gain.setValueAtTime(0.08, t + delay); gd.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.06);
+                o.connect(gd); gd.connect(ctx.destination); o.start(t + delay); o.stop(t + delay + 0.06);
+            });
+            const o2 = ctx.createOscillator();
+            o2.type = 'sine'; o2.frequency.setValueAtTime(1047, t + 0.18); o2.frequency.exponentialRampToValueAtTime(880, t + 0.35);
+            g.gain.setValueAtTime(0.2, t + 0.18); g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+            o2.connect(g); o2.start(t + 0.18); o2.stop(t + 0.4);
+        } else if (type === 'phase') {
+            const o = ctx.createOscillator();
+            o.type = 'sine'; o.frequency.setValueAtTime(528, t);
+            g.gain.setValueAtTime(0.08, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+            o.connect(g); o.start(t); o.stop(t + 0.1);
+        } else if (type === 'turn') {
+            [0, 0.1, 0.2].forEach((delay, i) => {
+                const o = ctx.createOscillator();
+                o.type = 'sine'; o.frequency.value = [528, 660, 880][i];
+                const gd = ctx.createGain();
+                gd.gain.setValueAtTime(0.15, t + delay); gd.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.15);
+                o.connect(gd); gd.connect(ctx.destination); o.start(t + delay); o.stop(t + delay + 0.15);
+            });
+        } else if (type === 'reveal') {
+            const o = ctx.createOscillator();
+            o.type = 'sine'; o.frequency.setValueAtTime(660, t); o.frequency.exponentialRampToValueAtTime(1320, t + 0.3);
+            g.gain.setValueAtTime(0.15, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+            o.connect(g); o.start(t); o.stop(t + 0.4);
+        } else if (type === 'chat') {
+            const o = ctx.createOscillator();
+            o.type = 'sine'; o.frequency.value = 740;
+            g.gain.setValueAtTime(0.1, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+            o.connect(g); o.start(t); o.stop(t + 0.08);
+        } else if (type === 'mana') {
+            const o = ctx.createOscillator();
+            o.type = 'sine'; o.frequency.setValueAtTime(660, t); o.frequency.exponentialRampToValueAtTime(880, t + 0.06);
+            g.gain.setValueAtTime(0.08, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+            o.connect(g); o.start(t); o.stop(t + 0.08);
+        } else if (type === 'concede') {
+            const o = ctx.createOscillator();
+            o.type = 'sawtooth'; o.frequency.setValueAtTime(440, t); o.frequency.exponentialRampToValueAtTime(110, t + 0.6);
+            g.gain.setValueAtTime(0.2, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.65);
+            o.connect(g); o.start(t); o.stop(t + 0.65);
+        }
+    } catch (e) { /* AudioContext not available */ }
+}
+
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    document.getElementById('sound-btn').textContent = soundEnabled ? '🔊' : '🔇';
+    document.getElementById('sound-tip').textContent = soundEnabled ? 'Sound On' : 'Sound Off';
+}
+
+// ════════════════════════════════════════
+//  GAME TIMER
+// ════════════════════════════════════════
+let gameStartTime = null;
+let _timerInterval = null;
+
+function startGameTimer() {
+    gameStartTime = Date.now();
+    const el = document.getElementById('game-timer');
+    el.classList.add('running');
+    _timerInterval = setInterval(() => {
+        const secs = Math.floor((Date.now() - gameStartTime) / 1000);
+        const m = Math.floor(secs / 60), s = secs % 60;
+        el.textContent = `⏱ ${m}:${String(s).padStart(2,'0')}`;
+    }, 1000);
+}
+
+// ════════════════════════════════════════
+//  CONCEDE
+// ════════════════════════════════════════
+function concede() {
+    if (!confirm(`Concede the game as ${myName}? This will be announced to all players.`)) return;
+    playSound('concede');
+    addLog(`🏳 ${myName} has conceded.`, 'event');
+    broadcastEvent('concede', {});
+    if (_timerInterval) { clearInterval(_timerInterval); }
+}
+
+// ════════════════════════════════════════
+//  INVITE LINK
+// ════════════════════════════════════════
+function copyInviteLink() {
+    const url = window.location.origin + window.location.pathname + '?room=' + roomId;
+    navigator.clipboard.writeText(url).then(() => {
+        const btn = document.getElementById('copy-invite-btn');
+        if (btn) { const orig = btn.textContent; btn.textContent = '✓ Copied!'; setTimeout(() => btn.textContent = orig, 2000); }
+    }).catch(() => prompt('Copy this invite link:', url));
+}
+
+// ════════════════════════════════════════
+//  KEYBOARD SHORTCUTS
+// ════════════════════════════════════════
+document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.ctrlKey || e.metaKey) return; // let Ctrl+Z pass to undo handler
+
+    switch (e.key.toLowerCase()) {
+        case 'd':
+            e.preventDefault();
+            drawCard('me');
+            break;
+        case ' ':
+            e.preventDefault();
+            const idx = PHASES.findIndex(p => p.id === gs.phase);
+            setPhase(PHASES[(idx + 1) % PHASES.length].id);
+            break;
+        case 'u':
+            e.preventDefault();
+            untapAll('me');
+            break;
+        case 'm':
+            e.preventDefault();
+            announceMyTurn();
+            break;
+        case 'escape':
+            closeReveal();
+            closeCtx();
+            break;
+    }
+});
 
 // ════════════════════════════════════════
 //  INIT
@@ -3815,9 +4239,16 @@ function init() {
     initTokenColors();
     initCCColors();
     initNotes();
-    addLog('Welcome! Create/join a room or play locally.', 'system');
+    addLog('Welcome! D=Draw · Space=Next Phase · U=Untap · M=My Turn', 'system');
     initStarfield();
     initAuth();
+
+    // Auto-fill room code from invite link
+    const urlRoom = new URLSearchParams(window.location.search).get('room');
+    if (urlRoom && urlRoom.length === 6) {
+        document.getElementById('lobby-join-code').value = urlRoom.toUpperCase();
+        addLog(`Invite link detected — enter your name and click Join.`, 'system');
+    }
 }
 
 init();
