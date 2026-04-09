@@ -1181,6 +1181,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
             <input class="lobby-input" id="lobby-p4" placeholder="Player 4" maxlength="20" style="margin:0;grid-column:1/-1">
         </div>
         <div id="lobby-status" style="font-size:0.72rem;color:#f87171;text-align:center;min-height:16px"></div>
+        <div id="lobby-auth-status" style="display:none;text-align:center;font-size:0.72rem;color:var(--text-sec);border-top:1px solid rgba(255,255,255,0.07);padding-top:10px;display:flex;align-items:center;justify-content:center;gap:8px"></div>
     </div>
 </div>
 
@@ -3418,6 +3419,11 @@ function onAuthSuccess() {
         document.getElementById('user-panel-name').textContent   = userProfile.username;
         document.getElementById('user-panel-email').textContent  = currentUser.email;
     }
+    const lobbyAuth = document.getElementById('lobby-auth-status');
+    if (lobbyAuth) {
+        lobbyAuth.style.display = 'flex';
+        lobbyAuth.innerHTML = `<span style="color:#86efac">☁ Signed in as <strong style="color:var(--gold)">${userProfile?.username || currentUser?.email}</strong></span><button onclick="authSignOut()" style="background:none;border:1px solid rgba(239,68,68,0.35);color:#f87171;border-radius:6px;padding:3px 10px;cursor:pointer;font-size:0.7rem;font-weight:700;">Sign Out</button>`;
+    }
     loadCosmetics();
     renderDecksList();
 }
@@ -3481,6 +3487,8 @@ async function authSignOut() {
     document.getElementById('auth-user-btn').style.display = 'none';
     document.getElementById('auth-email').value    = '';
     document.getElementById('auth-password').value = '';
+    const lobbyAuth = document.getElementById('lobby-auth-status');
+    if (lobbyAuth) lobbyAuth.style.display = 'none';
     showAuthLogin();
     document.getElementById('auth-overlay').classList.remove('hidden');
 }
