@@ -1164,8 +1164,12 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
 <!-- Lobby Modal -->
 <div id="lobby-overlay">
     <div class="lobby-box">
-        <div class="lobby-title">⚔️ MTG Commander</div>
+        <div class="lobby-title">⚔️ MTG</div>
         <div class="lobby-subtitle">Play locally or create an online room to play with friends.</div>
+        <div style="display:flex;gap:8px">
+            <button class="lobby-btn secondary" id="fmt-commander" onclick="setFormat('commander')" style="flex:1;font-size:0.8rem;padding:9px 6px;border-color:rgba(125,211,252,0.4);color:var(--gold)">⚔️ Commander<br><span style="font-size:0.68rem;opacity:0.7">40 life</span></button>
+            <button class="lobby-btn secondary" id="fmt-standard"  onclick="setFormat('standard')"  style="flex:1;font-size:0.8rem;padding:9px 6px">🃏 Standard<br><span style="font-size:0.68rem;opacity:0.7">20 life</span></button>
+        </div>
         <input class="lobby-input" id="lobby-name" placeholder="Your name" maxlength="20">
         <button class="lobby-btn primary" onclick="lobbyCreateRoom()">🌐 Create Online Room</button>
         <div class="lobby-divider">or join existing</div>
@@ -1739,21 +1743,46 @@ function untapAll(owner) {
 // drawCard defined further down with broadcast/log hooks
 
 function moveCard(id, toZone, toOwner) {
-    pushUndo(`Move ${cards[id].name} → ${toZone}`);
     const card = cards[id];
+    if (!card) return;
     const fromOwner = card.owner;
     const fromZone  = card.zone;
+
+    // In online mode, don't allow moving the opponent's remote cards
+    if (onlineMode && fromOwner === 'opp') return;
+
+    // In online mode, gifting your card to the opponent sends it to them
+    if (onlineMode && fromOwner === 'me' && toOwner !== 'me') {
+        pushUndo(`Gift ${card.name} to opponent`);
+        const fromArr = gs.me[fromZone];
+        const idx = fromArr.indexOf(id);
+        if (idx >= 0) fromArr.splice(idx, 1);
+        broadcastEvent('gift_card', {
+            card: {
+                zone: toZone, name: card.name, image: card.image || null,
+                typeLine: card.typeLine || '', manaCost: card.manaCost || '',
+                oracleText: card.oracleText || '', pt: card.pt || '',
+                color: card.color || 'colorless', x: card.x || 20, y: card.y || 20,
+            }
+        });
+        delete cards[id];
+        renderAll();
+        broadcastFullState();
+        addLog(`You gave ${card.name} to your opponent.`, 'event');
+        return;
+    }
+
+    pushUndo(`Move ${card.name} → ${toZone}`);
 
     const fromArr = gs[fromOwner][fromZone];
     const idx = fromArr.indexOf(id);
     if (idx >= 0) fromArr.splice(idx, 1);
 
-    card.zone    = toZone;
-    card.owner   = toOwner;
+    card.zone     = toZone;
+    card.owner    = toOwner;
     card.faceDown = false;
     if (toZone !== 'battlefield') card.tapped = false;
     if (toZone === 'battlefield') {
-        // Place near last known position, clamped to battlefield bounds
         const bfEl = document.getElementById(pfx(toOwner) + '-battlefield');
         const bfW = bfEl?.clientWidth  || 800;
         const bfH = bfEl?.clientHeight || 300;
@@ -1763,7 +1792,7 @@ function moveCard(id, toZone, toOwner) {
 
     gs[toOwner][toZone].push(id);
     renderAll();
-    if (card.owner === 'me' || toOwner === 'me') broadcastFullState();
+    if (fromOwner === 'me' || toOwner === 'me') broadcastFullState();
 }
 
 function addCounter(id, type) {
@@ -1860,6 +1889,8 @@ function findFreePosition(owner, excludeId, startX, startY) {
 let drag = null;
 
 function startDrag(id, e) {
+    // In online mode, you can only drag your own cards
+    if (onlineMode && cards[id]?.owner === 'opp') return;
     e.preventDefault();
     const card = cards[id];
     const srcEl = document.querySelector(`[data-id="${id}"]`);
@@ -3382,9 +3413,10 @@ alter table cosmetics add column if not exists land_arts jsonb default '{}';
 // ════════════════════════════════════════
 //  ONLINE STATE
 // ════════════════════════════════════════
-let onlineMode   = false;
-let localMode    = false;
-let myName       = 'You';
+let onlineMode     = false;
+let localMode      = false;
+let myName         = 'You';
+let selectedFormat = 'commander'; // 'commander' | 'standard'
 let myPlayerId   = null;          // assigned by room host
 let roomId       = null;
 let sbClient     = null;
@@ -3619,6 +3651,7 @@ function lobbyLocal() {
 
     document.getElementById('lobby-overlay').classList.add('hidden');
     document.getElementById('lobby-waiting').style.display = 'none';
+    applyFormat(selectedFormat);
     addLog(`Local 4-player — ${myName}, ${p2name}, ${p3name}, ${p4name}. Use 🎲 Who Goes First? to roll off!`, 'system');
     startGameTimer();
     renderAll();
@@ -3654,9 +3687,26 @@ function lobbyJoinRoom() {
 
 function startGameFromLobby() {
     document.getElementById('lobby-waiting').style.display = 'none';
-    broadcastEvent('game_start', { players: Object.assign({ p0: { name: myName } }, remotePlayers) });
+    applyFormat(selectedFormat);
+    broadcastEvent('game_start', { players: Object.assign({ p0: { name: myName } }, remotePlayers), format: selectedFormat });
     addLog('Game started! Use 🎲 Who Goes First? to roll off.', 'system');
     startGameTimer();
+}
+
+function setFormat(fmt) {
+    selectedFormat = fmt;
+    document.getElementById('fmt-commander').style.borderColor = fmt === 'commander' ? 'rgba(125,211,252,0.5)' : '';
+    document.getElementById('fmt-commander').style.color       = fmt === 'commander' ? 'var(--gold)' : '';
+    document.getElementById('fmt-standard').style.borderColor  = fmt === 'standard'  ? 'rgba(125,211,252,0.5)' : '';
+    document.getElementById('fmt-standard').style.color        = fmt === 'standard'  ? 'var(--gold)' : '';
+}
+
+function applyFormat(fmt) {
+    selectedFormat = fmt;
+    const life = fmt === 'standard' ? 20 : 40;
+    ['me','opp','p3','p4'].forEach(o => { gs[o].life = life; });
+    renderLife();
+    addLog(`Format: ${fmt === 'standard' ? 'Standard (20 life)' : 'Commander (40 life)'}`, 'system');
 }
 
 function setLobbyStatus(msg) {
@@ -3709,9 +3759,10 @@ function handleOnlineEvent(payload) {
         addLog(`${name} joined the room.`, 'event');
         document.getElementById('lobby-player-count').textContent = (Object.keys(remotePlayers).length + 1) + ' players connected';
 
-        // Host sends back acknowledgment with assigned ID
+        // Host sends back acknowledgment with assigned ID and room info
         if (myPlayerId === 'p0') {
             broadcastEvent('player_ack', { targetName: name, assignedId: pid });
+            broadcastEvent('room_info', { format: selectedFormat });
         }
         // Everyone re-broadcasts their appearance and full card state so the newcomer can see it
         setTimeout(() => {
@@ -3750,8 +3801,14 @@ function handleOnlineEvent(payload) {
 
     if (type === 'game_start') {
         document.getElementById('lobby-waiting').style.display = 'none';
+        applyFormat(payload.format || 'commander');
         addLog('Game started!', 'event');
         startGameTimer();
+        return;
+    }
+
+    if (type === 'room_info') {
+        applyFormat(payload.format || 'commander');
         return;
     }
 
@@ -3845,6 +3902,27 @@ function handleOnlineEvent(payload) {
     if (type === 'concede') {
         addLog(`🏳 ${name} has conceded.`, 'event');
         playSound('concede');
+        return;
+    }
+
+    if (type === 'gift_card') {
+        const rc = payload.card;
+        const newId = 'gift_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+        cards[newId] = {
+            id: newId, owner: 'me', zone: rc.zone,
+            name: rc.name, image: rc.image || null,
+            customImage: landArtCache[rc.name] || null,
+            typeLine: rc.typeLine || '', manaCost: rc.manaCost || '',
+            oracleText: rc.oracleText || '', pt: rc.pt || '',
+            color: rc.color || 'colorless',
+            x: rc.x || 20, y: rc.y || 20,
+            tapped: false, faceDown: false, counters: {},
+        };
+        gs.me[rc.zone].push(newId);
+        renderAll();
+        broadcastFullState();
+        addLog(`${name} gave you ${rc.name}!`, 'event');
+        playSound('draw');
         return;
     }
 
