@@ -1033,8 +1033,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
         <div class="deck-import-footer">
             <div class="deck-import-opts">
                 <span class="sp-opts-label">Import for:</span>
-                <button class="sp-opt active" id="imp-me"  onclick="setImportTarget('me')">Me</button>
-                <button class="sp-opt"        id="imp-opp" onclick="setImportTarget('opp')">Opponent</button>
+                <button class="sp-opt active" id="imp-me" onclick="setImportTarget('me')">Me</button>
             </div>
             <div style="display:flex;gap:6px">
                 <button class="deck-import-btn" id="import-btn" onclick="importDeck()" style="flex:1.5">Import &amp; Load</button>
@@ -1983,6 +1982,7 @@ function showCtx(id, e) {
         delete landArtCache[card.name];
         Object.values(cards).forEach(c => { if (c.name === card.name) c.customImage = null; });
         scheduleCosmetics();
+        broadcastEvent('art_update', { cardName: card.name, imageData: null });
         renderAll();
     });
 
@@ -2459,11 +2459,8 @@ function setCustomArt(id) {
                     if (c.name === card.name && c.owner === card.owner) c.customImage = data;
                 });
                 scheduleCosmetics();
-                if (basic) {
-                    addLog(`Art updated for all ${card.name} copies.`, 'system');
-                } else {
-                    addLog(`Art updated for ${card.name} — saved to profile.`, 'system');
-                }
+                broadcastEvent('art_update', { cardName: card.name, imageData: data });
+                addLog(`Art updated for ${card.name} — saved to profile.`, 'system');
                 renderAll();
             });
         };
@@ -3001,8 +2998,7 @@ async function renderDecksList() {
                 <div style="font-size:0.72rem;color:var(--text-sec);margin-top:2px">${cmdCount ? cmdCount + ' cmd · ' : ''}${mainCount} main · ${total} total · ${dateStr}</div>
             </div>
             <div style="display:flex;gap:4px;flex-shrink:0">
-                <button class="deck-action-btn load" onclick="loadDeckFromSaved(${i}, 'me')">Load→Me</button>
-                <button class="deck-action-btn load" onclick="loadDeckFromSaved(${i}, 'opp')" style="opacity:0.7">→Opp</button>
+                <button class="deck-action-btn load" onclick="loadDeckFromSaved(${i}, 'me')">Load</button>
                 <button class="deck-action-btn" onclick="editDeck(${i})" style="color:var(--gold);border-color:rgba(200,168,75,0.3)">Edit</button>
                 <button class="deck-action-btn del" onclick="deleteDeck(${i})">✕</button>
             </div>
@@ -3010,7 +3006,7 @@ async function renderDecksList() {
     }).join('');
 }
 
-async function loadDeckFromSaved(index, owner) {
+async function loadDeckFromSaved(index) {
     const deck = _deckCache[index];
     if (!deck) return;
 
@@ -3019,9 +3015,7 @@ async function loadDeckFromSaved(index, owner) {
     document.getElementById('cmd-input').value        = deck.commander || '';
     document.getElementById('deck-input').value       = deck.mainDeck  || '';
 
-    importTarget = owner;
-    document.querySelectorAll('.sp-opt[id^="imp-"]').forEach(b => b.classList.remove('active'));
-    document.getElementById('imp-' + owner).classList.add('active');
+    importTarget = 'me';
 
     await importDeck();
 }
@@ -3719,6 +3713,9 @@ function handleOnlineEvent(payload) {
         setTimeout(() => {
             broadcastEvent('sleeve',  { sleeveData: gs.sleeve });
             broadcastEvent('playmat', { colorIdx: playmatColorIdx, imageData: playmatImage });
+            if (Object.keys(landArtCache).length) {
+                broadcastEvent('art_cache', { cache: landArtCache });
+            }
             broadcastFullState();
         }, 600);
         return;
@@ -3730,7 +3727,12 @@ function handleOnlineEvent(payload) {
             addLog(`You are seat ${myPlayerId}.`, 'system');
             // Now send full join with assigned ID and our full board state
             broadcastEvent('player_state', { name: myName, life: gs.me.life, cmdDmg: gs.me.cmdDmg, handCount: gs.me.hand.length, libCount: gs.me.library.length, bfCount: gs.me.battlefield.length });
-            setTimeout(() => broadcastFullState(), 300);
+            setTimeout(() => {
+                broadcastFullState();
+                if (Object.keys(landArtCache).length) {
+                    broadcastEvent('art_cache', { cache: landArtCache });
+                }
+            }, 300);
         }
         return;
     }
@@ -3839,6 +3841,34 @@ function handleOnlineEvent(payload) {
         return;
     }
 
+    if (type === 'art_update') {
+        // Store and apply a single card art change from another player
+        if (!window._remoteArtCache) window._remoteArtCache = {};
+        if (!window._remoteArtCache[from]) window._remoteArtCache[from] = {};
+        if (payload.imageData) window._remoteArtCache[from][payload.cardName] = payload.imageData;
+        else delete window._remoteArtCache[from][payload.cardName];
+        Object.values(cards).forEach(c => {
+            if (c.name === payload.cardName && c.owner === 'opp') {
+                c.customImage = payload.imageData || null;
+            }
+        });
+        renderAll();
+        return;
+    }
+
+    if (type === 'art_cache') {
+        // Store and apply a full art cache dump from another player on join
+        if (!window._remoteArtCache) window._remoteArtCache = {};
+        window._remoteArtCache[from] = Object.assign({}, payload.cache || {});
+        Object.entries(payload.cache || {}).forEach(([cardName, imageData]) => {
+            Object.values(cards).forEach(c => {
+                if (c.name === cardName && c.owner === 'opp') c.customImage = imageData || null;
+            });
+        });
+        renderAll();
+        return;
+    }
+
     if (type === 'full_state') {
         // Reconstruct the opponent's board from the sender's full card state
         if (!window._remoteCardIds) window._remoteCardIds = {};
@@ -3849,9 +3879,11 @@ function handleOnlineEvent(payload) {
         (payload.myCards || []).forEach(rc => {
             const remoteId = 'remote_' + from + '_' + rc.id;
             window._remoteCardIds[from].push(remoteId);
+            // Use any art we already received for this card name
+            const knownArt = (window._remoteArtCache || {})[from]?.[rc.name] || null;
             cards[remoteId] = {
                 id: remoteId, owner: 'opp', zone: rc.zone,
-                name: rc.name, image: rc.image || null, customImage: null,
+                name: rc.name, image: rc.image || null, customImage: knownArt,
                 typeLine: rc.typeLine || '', manaCost: rc.manaCost || '',
                 oracleText: rc.oracleText || '', pt: rc.pt || '',
                 color: rc.color || 'colorless',
