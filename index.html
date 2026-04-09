@@ -1429,12 +1429,12 @@ const cards = {}; // id → card object
 const landArtCache = {}; // basic land name → custom art data URL (persisted to account)
 
 const gs = {
-    me:  { life: 40, cmdDmg: 0, cmdTax: 0, poison: 0, energy: 0, experience: 0, hand: [], battlefield: [], library: [], graveyard: [], exile: [], command: [] },
-    opp: { life: 40, cmdDmg: 0, cmdTax: 0, poison: 0, energy: 0, experience: 0, hand: [], battlefield: [], library: [], graveyard: [], exile: [], command: [] },
-    p3:  { life: 40, cmdDmg: 0, cmdTax: 0, poison: 0, energy: 0, experience: 0, hand: [], battlefield: [], library: [], graveyard: [], exile: [], command: [] },
-    p4:  { life: 40, cmdDmg: 0, cmdTax: 0, poison: 0, energy: 0, experience: 0, hand: [], battlefield: [], library: [], graveyard: [], exile: [], command: [] },
+    me:  { life: 40, cmdDmg: 0, cmdTax: 0, poison: 0, energy: 0, experience: 0, hand: [], battlefield: [], library: [], graveyard: [], exile: [], command: [], sleeve: null },
+    opp: { life: 40, cmdDmg: 0, cmdTax: 0, poison: 0, energy: 0, experience: 0, hand: [], battlefield: [], library: [], graveyard: [], exile: [], command: [], sleeve: null },
+    p3:  { life: 40, cmdDmg: 0, cmdTax: 0, poison: 0, energy: 0, experience: 0, hand: [], battlefield: [], library: [], graveyard: [], exile: [], command: [], sleeve: null },
+    p4:  { life: 40, cmdDmg: 0, cmdTax: 0, poison: 0, energy: 0, experience: 0, hand: [], battlefield: [], library: [], graveyard: [], exile: [], command: [], sleeve: null },
     phase: 'main1',
-    sleeve: null,
+    sleeve: null, // alias for gs.me.sleeve (kept for backward-compat)
 };
 
 // Maps owner key to HTML id prefix ('me' → 'my', everything else stays)
@@ -1491,9 +1491,9 @@ function buildCardEl(card, opts = {}) {
     div.dataset.id = card.id;
 
     if (opts.faceDown || card.faceDown) {
-        if (gs.sleeve) {
-            // Sleeve image replaces the entire card back
-            div.innerHTML = `<img src="${gs.sleeve}" draggable="false" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--radius);">`;
+        const ownerSleeve = gs[card.owner]?.sleeve || gs.sleeve;
+        if (ownerSleeve) {
+            div.innerHTML = `<img src="${ownerSleeve}" draggable="false" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:var(--radius);">`;
         } else {
             div.innerHTML = `<div class="card-back"><div class="card-back-inner">🃏</div></div>`;
         }
@@ -2198,11 +2198,12 @@ function renderLibraryVisual(owner) {
         el.innerHTML = '<span style="font-size:1.4rem;opacity:0.3">📚</span>';
         return;
     }
-    // Show stacked card backs with sleeve if set
-    const sleeveImg = gs.sleeve
-        ? `<img class="sleeve-img" src="${gs.sleeve}" draggable="false">`
+    // Show stacked card backs with sleeve if set (use owner's sleeve)
+    const ownerSleeve = gs[owner]?.sleeve || (owner === 'me' ? gs.sleeve : null);
+    const sleeveImg = ownerSleeve
+        ? `<img class="sleeve-img" src="${ownerSleeve}" draggable="false">`
         : '';
-    const hasSleeve = gs.sleeve ? ' has-sleeve' : '';
+    const hasSleeve = ownerSleeve ? ' has-sleeve' : '';
     const back = `<div class="library-card-back${hasSleeve}">${sleeveImg}</div>`;
     const extras = count >= 3 ? back + back : count >= 2 ? back : '';
     el.innerHTML = `<div class="library-stack">${back}${extras}</div>`;
@@ -2231,6 +2232,7 @@ function handleSleeveUpload(input) {
     reader.onload = e => {
         compressImage(e.target.result, 300, 420, 0.7, data => {
             gs.sleeve = data;
+            gs.me.sleeve = data;
             updateSleeveUI();
             renderAll();
             broadcastEvent('sleeve', { sleeveData: data });
@@ -2243,6 +2245,7 @@ function handleSleeveUpload(input) {
 
 function clearSleeve() {
     gs.sleeve = null;
+    gs.me.sleeve = null;
     updateSleeveUI();
     renderAll();
     broadcastEvent('sleeve', { sleeveData: null });
@@ -3521,6 +3524,7 @@ async function loadCosmetics() {
     if (!data) return;
     if (data.sleeve_data) {
         gs.sleeve = data.sleeve_data;
+        gs.me.sleeve = data.sleeve_data;
         updateSleeveUI();
         renderAll();
     }
@@ -3798,6 +3802,9 @@ function handleOnlineEvent(payload) {
             remotePlayers[from].sleeve = payload.sleeveData || null;
             renderRemotePlayers();
         }
+        // Apply to the opponent's gs so their cards show the right sleeve
+        gs.opp.sleeve = payload.sleeveData || null;
+        renderAll();
         return;
     }
 
@@ -3908,7 +3915,9 @@ function handleOnlineEvent(payload) {
             remotePlayers[from].bfCount = gs.opp.battlefield.length;
             renderRemotePlayers();
         }
-        renderAll();
+        // Debounce the re-render so rapid incoming updates don't thrash the DOM
+        clearTimeout(window._renderDebounce);
+        window._renderDebounce = setTimeout(renderAll, 60);
         return;
     }
 
@@ -3935,7 +3944,14 @@ function broadcastMyState() {
     broadcastEvent('playmat', { colorIdx: playmatColorIdx, imageData: playmatImage });
 }
 
+let _broadcastStateTimer = null;
 function broadcastFullState() {
+    if (!onlineMode) return;
+    clearTimeout(_broadcastStateTimer);
+    _broadcastStateTimer = setTimeout(_sendFullState, 80);
+}
+
+function _sendFullState() {
     if (!onlineMode) return;
     const myCards = [];
     ['hand','battlefield','graveyard','exile','library','command'].forEach(zone => {
