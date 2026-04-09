@@ -1039,6 +1039,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
             <div style="display:flex;gap:6px">
                 <button class="deck-import-btn" id="import-btn" onclick="importDeck()" style="flex:1.5">Import &amp; Load</button>
                 <button class="deck-import-btn" id="save-btn" onclick="saveDeck()" style="flex:1;background:rgba(200,168,75,0.15);color:var(--gold);border:1px solid rgba(200,168,75,0.3);">Save</button>
+                <button class="deck-import-btn" onclick="unloadDeck()" style="flex:1;background:rgba(239,68,68,0.08);color:#f87171;border:1px solid rgba(239,68,68,0.3);">Unload</button>
             </div>
             <div class="import-progress" id="import-progress"></div>
         </div>
@@ -2871,6 +2872,19 @@ async function importDeck() {
     } else {
         setImportProgress(`✓ Imported ${added} cards — commander to Command Zone, rest to Library.`);
     }
+}
+
+function unloadDeck() {
+    const owner = importTarget;
+    const zones = ['hand','battlefield','library','graveyard','exile','command'];
+    // Remove all card objects belonging to this owner
+    zones.forEach(z => {
+        gs[owner][z].forEach(id => delete cards[id]);
+        gs[owner][z] = [];
+    });
+    renderAll();
+    broadcastFullState();
+    setImportProgress(`${owner === 'me' ? 'Your' : "Opponent's"} deck unloaded.`);
 }
 
 // ════════════════════════════════════════
