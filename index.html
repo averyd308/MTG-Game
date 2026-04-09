@@ -1980,13 +1980,9 @@ function showCtx(id, e) {
     sep();
     add('🖼️ Change Art',             () => setCustomArt(id));
     if (card.customImage || landArtCache[card.name]) add('↩ Reset Art', () => {
-        if (isBasicLand(card)) {
-            delete landArtCache[card.name];
-            Object.values(cards).forEach(c => { if (c.name === card.name) c.customImage = null; });
-            scheduleCosmetics();
-        } else {
-            card.customImage = null;
-        }
+        delete landArtCache[card.name];
+        Object.values(cards).forEach(c => { if (c.name === card.name) c.customImage = null; });
+        scheduleCosmetics();
         renderAll();
     });
 
@@ -2457,16 +2453,16 @@ function setCustomArt(id) {
         const reader = new FileReader();
         reader.onload = e => {
             compressImage(e.target.result, 480, 340, 0.85, data => {
+                // Store by card name so it persists to profile and applies to all copies
+                landArtCache[card.name] = data;
+                Object.values(cards).forEach(c => {
+                    if (c.name === card.name && c.owner === card.owner) c.customImage = data;
+                });
+                scheduleCosmetics();
                 if (basic) {
-                    // Apply to all owned copies of this land
-                    landArtCache[card.name] = data;
-                    Object.values(cards).forEach(c => {
-                        if (c.name === card.name && c.owner === card.owner) c.customImage = data;
-                    });
-                    scheduleCosmetics();
                     addLog(`Art updated for all ${card.name} copies.`, 'system');
                 } else {
-                    cards[id].customImage = data;
+                    addLog(`Art updated for ${card.name} — saved to profile.`, 'system');
                 }
                 renderAll();
             });
